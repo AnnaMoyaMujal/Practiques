@@ -6,6 +6,7 @@
 
 First, we import the dates we need to use, in this case GSE123813_scc_metadata.txt.gz("<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE123813&format=file&file=GSE123813%5Fscc%5Fmetadata%2Etxt%2Egz>") for metadata and the subsetscc for our subset.
 
+<<<<<<< HEAD
 \
 For merging the two datasets into one cohesive unit for analysis, we rely on metadata. This metadata takes the form of a matrix that holds details regarding every individual cell ID. The cell ID acts as a singular reference point within our data; it points to specific elements within our metadata. For us, these elements will be patient types, details of treatment (including whether it's pre or post), and cluster types. Understanding clusters is vital towards our analysis of cell populations; cells will be organized into clusters according to common gene expression patterns, determined by their RNA sequences.
 
@@ -39,22 +40,23 @@ There exists one key—and only one—common between metadata and gene expressio
 
 1.  **Use Cell ID as a Common Key**:
 
-    -   The cell ID is the unique identifier that is present in both the metadata and the gene expression data.
+-   The cell ID is the unique identifier that is present in both the metadata and the gene expression data.
 
-    -   This common key allows us to merge the datasets accurately.
+-   This common key allows us to merge the datasets accurately.
 
 2.  **Create a Combined Matrix**:
 
-    -   In the combined matrix, columns will represent various identifiers (like cell ID, patient type, treatment status, cluster type).
+-   In the combined matrix, columns will represent various identifiers (like cell ID, patient type, treatment status, cluster type).
 
-    -   Each row will represent a gene, and the cells in the matrix will contain the frequency of expression for each gene in each cell.
+-   Each row will represent a gene, and the cells in the matrix will contain the frequency of expression for each gene in each cell.
 
 3.  **Analyze Gene Expression Across Clusters**:
 
-    -   By counting the occurrences of each gene across different cells, we can determine patterns of gene expression within clusters.
+-   By counting the occurrences of each gene across different cells, we can determine patterns of gene expression within clusters.
 
-    -   This helps in identifying subpopulations of cells with similar or different responses to treatments (pre vs. post).
+-   This helps in identifying subpopulations of cells with similar or different responses to treatments (pre vs. post).
 
+=======
 ![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.38.14.png)
 
 ```{r file}
