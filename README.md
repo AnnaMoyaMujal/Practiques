@@ -2,9 +2,10 @@
 
 First, we import the dates we need to use, in this case GSE123813_scc_metadata.txt.gz("<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE123813&format=file&file=GSE123813%5Fscc%5Fmetadata%2Etxt%2Egz>") for metadata and the subsetscc for our subset.
 
+![](images/Captura de pantalla 2024-06-20 a las 10.24.40.png)
+
 ```{r file}
 
-setwd("/Users/annamoyamujal/Documents/Pràctiques/Dades/Primer treball")
 scc_metadata <- read.delim("scc_metadata.txt")
 subsetscc <- read.delim("subsetscc.csv" )
 
@@ -20,6 +21,8 @@ library(dplyr)
 ```
 
 In order to be able to organize and do the correct analysis, we look at our matrix and realize that the subsets we have are the genes of interest. In order to be able to do the analysis we need it to pass to the columns, so we use the function t() to be able to exchange it.
+
+![](images/Captura de pantalla 2024-06-20 a las 10.25.02.png)
 
 ```{r}
 t_subsetscc <- t(subsetscc) #if we see the metadata and the subset, the gens are int the diferent way, the colname and the other is in the row name, we do a transposition to have this informaton in the same line.
@@ -58,6 +61,8 @@ table(Seurat_metadata$treatment)
 ![](images/Captura de pantalla 2024-06-18 a las 10.29.21.png)
 
 In the specific case of observing mitochondrial and ribosomal genes, this task is carried out because these genes are essential for proper cellular functioning.Dysfunctions in these genes may be indicative of cellular stress, given that both mitochondria and ribosomes play an essential role in vital processes such as energy production (in the case of mitochondria) and protein synthesis (in the case of ribosomes). By analyzing these percentages, one can understand the functional state of individual cells and how they might respond to stressful conditions.This facilitates more detailed investigation to better understand how different cell subpopulations react to specific stressful stimuli. - PercentageFeatureSet() = to calculate the percentage of the set of features of each cell, the ^MT-/^RP[SL]/\^HB[\^(P)] is a regular pattern that helps us choose the features that start with what we put in "" and since we will have to add a new one we will need add the name by calling the code col.name (name column), to later be able to call the expression percentage of the selected characteristic. - The VlnPlot() is a violin-style graph that shows the distribution of the expression in our different groups of cells. The group.by = is an r code that will ask us which style of how the graph will be divided. In this case, "orig.ident" is used, which tries to maintain the original identity of the cell as specified. features = feats specifies the genes that will be shown in the graphic, feats is a vector that contains numbers of the characteristics that are desired in the graphic. pt.size = 0.1 (point size), ncol = 3 (n=number, col=columns), NoLegend() (No legend) -\> that's all for how we will see the graphic visually, now we need to put the data we are using.
+
+![](images/Captura de pantalla 2024-06-20 a las 10.25.19.png)
 
 ```{r}
 Seurat_metadata <- PercentageFeatureSet(Seurat_metadata, "^MT-", col.name="percent_mito")
@@ -103,6 +108,8 @@ table(CD4tots@meta.data$cluster)
 
 Data normalization is a fundamental statistical step. So we treat them in the same way even if they come from different sources, and they can be in different measures. Normalization is important to eliminate or reduce unwanted effects that may arise due to technical or biological differences between samples.
 
+![](images/Captura de pantalla 2024-06-20 a las 10.25.33.png)
+
 ```{r}
 CD4tots <- NormalizeData(CD4tots)
 ```
@@ -133,6 +140,8 @@ DimPlot(CD4tots, reduction = "umap", group.by = "RNA_snn_res.0.7", label = TRUE)
 ![](images/Captura de pantalla 2024-06-18 a las 10.34.03.png)*Only Interesting Groups*
 
 In order to be able to focus, in the next step we have to specify the groups that are relevant for us, and we define them as clusters. This way we will be able to make a more visual limitation and in an effective way we will be able to analyze these specific groups.
+
+![](images/Captura de pantalla 2024-06-20 a las 10.26.00.png)
 
 ```{r}
 
@@ -168,7 +177,7 @@ Idents(CD8tots) <- CD8tots$celltype.cnd
 
 *cell proportions*
 
-In order to be able to make the percentage of the data, it is necessary to make the proportion of groups with respect to the number of cells. So we will know how they are distributed.
+In order to be able to make the percentage of the data, it is necessary to make the proportion of groups with respect to the number of cells. So we will know how they are distributed.co
 
 ```{r}
 prop.table(table(CD8tots@meta.data$celltype.cnd))*100
