@@ -1,4 +1,8 @@
-# Practiques
+# Practices
+
+#### 1. Import data
+
+-    Import the files
 
 First, we import the dates we need to use, in this case GSE123813_scc_metadata.txt.gz("<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE123813&format=file&file=GSE123813%5Fscc%5Fmetadata%2Etxt%2Egz>") for metadata and the subsetscc for our subset.
 
@@ -19,6 +23,16 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 ```
+
+#### 2. Data processing
+
+-   Treat the data
+
+-    Make sure metadata and subset data match
+
+-    Create the Seurat Object
+
+-    We add the important information that is the treatment and the cluster
 
 In order to be able to organize and do the correct analysis, we look at our matrix and realize that the subsets we have are the genes of interest. In order to be able to do the analysis we need it to pass to the columns, so we use the function t() to be able to exchange it.
 
@@ -59,6 +73,12 @@ table(Seurat_metadata$treatment)
 ![](images/Captura de pantalla 2024-06-18 a las 10.29.11.png)
 
 ![](images/Captura de pantalla 2024-06-18 a las 10.29.21.png)
+
+#### 3. Quality control
+
+-   Calculated and visualized various quality control.
+
+-   Identified and visualized highly variable genes.
 
 In the specific case of observing mitochondrial and ribosomal genes, this task is carried out because these genes are essential for proper cellular functioning.Dysfunctions in these genes may be indicative of cellular stress, given that both mitochondria and ribosomes play an essential role in vital processes such as energy production (in the case of mitochondria) and protein synthesis (in the case of ribosomes). By analyzing these percentages, one can understand the functional state of individual cells and how they might respond to stressful conditions.This facilitates more detailed investigation to better understand how different cell subpopulations react to specific stressful stimuli. - PercentageFeatureSet() = to calculate the percentage of the set of features of each cell, the ^MT-/^RP[SL]/\^HB[\^(P)] is a regular pattern that helps us choose the features that start with what we put in "" and since we will have to add a new one we will need add the name by calling the code col.name (name column), to later be able to call the expression percentage of the selected characteristic. - The VlnPlot() is a violin-style graph that shows the distribution of the expression in our different groups of cells. The group.by = is an r code that will ask us which style of how the graph will be divided. In this case, "orig.ident" is used, which tries to maintain the original identity of the cell as specified. features = feats specifies the genes that will be shown in the graphic, feats is a vector that contains numbers of the characteristics that are desired in the graphic. pt.size = 0.1 (point size), ncol = 3 (n=number, col=columns), NoLegend() (No legend) -\> that's all for how we will see the graphic visually, now we need to put the data we are using.
 
@@ -104,7 +124,13 @@ CD4tots <- subset(CD4tots, subset=nFeature_RNA < 4000 & percent_mito < 8 )
 table(CD4tots@meta.data$cluster)
 ```
 
-*Normalization the data*
+#### 4.Normalization the data
+
+-   Normalized the data
+
+-   Identify the variables with different methods
+
+-    PCA
 
 Data normalization is a fundamental statistical step. So we treat them in the same way even if they come from different sources, and they can be in different measures. Normalization is important to eliminate or reduce unwanted effects that may arise due to technical or biological differences between samples.
 
@@ -112,13 +138,7 @@ Data normalization is a fundamental statistical step. So we treat them in the sa
 
 ```{r}
 CD4tots <- NormalizeData(CD4tots)
-```
 
-In the next step, we specify a group of genes so that they behave differently between cells in the data we have provided. We have to identify which ones are more active in order to take them into account. We search for the genes that contribute most significantly to the variability of a gene expression matrix.
-
-![](images/Captura de pantalla 2024-06-20 a las 10.39.32.png)
-
-```{r}
 CD4tots <- FindVariableFeatures(CD4tots, selection.method = "vst", nfeatures = 2000)#We select 2000 by default.
 
 CD4tots <- ScaleData(CD4tots)
@@ -127,7 +147,19 @@ CD4tots <- RunPCA(CD4tots, npcs = 16) #We reduce dimensionality using RunPCA (We
 CD4tots <- FindNeighbors(CD4tots, dims = 1:16)
 CD4tots <- FindClusters(CD4tots, resolution = c(0.7))
 CD4tots <- RunUMAP(CD4tots, dims=1:16)
+```
 
+#### 5. **Visualization of Clusters**
+
+-   Using UMAP for the clusters.
+
+-   Plotted clustered cells and annotated clusters.
+
+In the next step, we specify a group of genes so that they behave differently between cells in the data we have provided. We have to identify which ones are more active in order to take them into account. We search for the genes that contribute most significantly to the variability of a gene expression matrix.
+
+![](images/Captura de pantalla 2024-06-20 a las 10.39.32.png)
+
+```{r}
 
 DimPlot(CD4tots, reduction = "umap", group.by = "treatment")
 #Let's create the plot to visualize the spatial distribution of annotated cells.
@@ -139,7 +171,11 @@ DimPlot(CD4tots, reduction = "umap", group.by = "RNA_snn_res.0.7", label = TRUE)
 
 ![](images/Captura de pantalla 2024-06-18 a las 10.33.56.png)
 
-![](images/Captura de pantalla 2024-06-18 a las 10.34.03.png)*Only Interesting Groups*
+![](images/Captura de pantalla 2024-06-18 a las 10.34.03.png)*6.* S**ubset Analysis**
+
+-   Created subsets based on cell identities.
+
+-   Visualized subsets to compare treatment conditions.
 
 In order to be able to focus, in the next step we have to specify the groups that are relevant for us, and we define them as clusters. This way we will be able to make a more visual limitation and in an effective way we will be able to analyze these specific groups.
 
@@ -177,7 +213,9 @@ In this step, we're assigning cluster identities based on the definitions we've 
 Idents(CD8tots) <- CD8tots$celltype.cnd
 ```
 
-*cell proportions*
+#### *7. Cell proportions*
+
+-   Calculated and visualized the proportions of different cell types based on treatment condition.
 
 In order to be able to make the percentage of the data, it is necessary to make the proportion of groups with respect to the number of cells. So we will know how they are distributed.co
 
