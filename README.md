@@ -2,11 +2,60 @@
 
 #### 1. Import data
 
--    Import the files
+-   Import the files
 
 First, we import the dates we need to use, in this case GSE123813_scc_metadata.txt.gz("<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE123813&format=file&file=GSE123813%5Fscc%5Fmetadata%2Etxt%2Egz>") for metadata and the subsetscc for our subset.
 
-![](images/Captura de pantalla 2024-06-20 a las 10.38.14.png)
+\
+For merging the two datasets into one cohesive unit for analysis, we rely on metadata. This metadata takes the form of a matrix that holds details regarding every individual cell ID. The cell ID acts as a singular reference point within our data; it points to specific elements within our metadata. For us, these elements will be patient types, details of treatment (including whether it's pre or post), and cluster types. Understanding clusters is vital towards our analysis of cell populations; cells will be organized into clusters according to common gene expression patterns, determined by their RNA sequences.
+
+We will use the common cell ID in both datasets to establish connections between the two data sets. We create a matrix where the identifiers form the columns, and each row depicts a gene with unique occurrences counted. This paves way for distinguishing cellular subpopulations in future— some showing differential responses while others uniform —to pre and post-treatment in an identified manner.
+
+To conduct a proper evaluation, two primary datasets must be brought together:
+
+### 1. Metadata
+
+This particular array furnishes elaborate particulars for every cell ID, entailing:
+
+-   **Nature of patient**: It distinguishes the individual under whom the cell is registered.
+
+-   **State of treatment**: Whether information was taken prior to or post a specific treatment.
+
+-   **Type of cluster**: The group or cluster that the cell categorizes into based on gene expression patterns.
+
+### 2. Data Concerning Gene Expression
+
+This dataset includes the cell IDs and genes, as well as their frequency of expression within the cells.
+
+### Incorporating the Datasets
+
+#### Employ Cell ID as the Binding Factor
+
+-   **Cell ID** acts as the unique identifier present in both the metadata and gene expression datasets.
+
+-   This common element ensures a precise merge of the datasets.
+
+There exists one key—and only one—common between metadata and gene expression: the cell ID. The presence of this unique identifier ensures a precise merge of the datasets.Steps to Integrate the Datasets
+
+1.  **Use Cell ID as a Common Key**:
+
+    -   The cell ID is the unique identifier that is present in both the metadata and the gene expression data.
+
+    -   This common key allows us to merge the datasets accurately.
+
+2.  **Create a Combined Matrix**:
+
+    -   In the combined matrix, columns will represent various identifiers (like cell ID, patient type, treatment status, cluster type).
+
+    -   Each row will represent a gene, and the cells in the matrix will contain the frequency of expression for each gene in each cell.
+
+3.  **Analyze Gene Expression Across Clusters**:
+
+    -   By counting the occurrences of each gene across different cells, we can determine patterns of gene expression within clusters.
+
+    -   This helps in identifying subpopulations of cells with similar or different responses to treatments (pre vs. post).
+
+![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.38.14.png)
 
 ```{r file}
 
@@ -28,15 +77,15 @@ library(dplyr)
 
 -   Treat the data
 
--    Make sure metadata and subset data match
+-   Make sure metadata and subset data match
 
--    Create the Seurat Object
+-   Create the Seurat Object
 
--    We add the important information that is the treatment and the cluster
+-   We add the important information that is the treatment and the cluster
 
 In order to be able to organize and do the correct analysis, we look at our matrix and realize that the subsets we have are the genes of interest. In order to be able to do the analysis we need it to pass to the columns, so we use the function t() to be able to exchange it.
 
-![](images/Captura de pantalla 2024-06-20 a las 10.38.29.png)
+![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.38.29.png)
 
 ```{r}
 t_subsetscc <- t(subsetscc) #if we see the metadata and the subset, the gens are int the diferent way, the colname and the other is in the row name, we do a transposition to have this informaton in the same line.
@@ -58,7 +107,7 @@ head(Seurat_metadata, n=5) # can we see if the Seurat its working
 
 ```
 
-![](images/Captura de pantalla 2024-06-18 a las 10.28.27.png)
+![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.28.27.png)
 
 We want to put cluster and treatment inside our Seurat object. Since they are the characteristics that we are interested in observing
 
@@ -70,9 +119,9 @@ table(Seurat_metadata$cluster)
 table(Seurat_metadata$treatment)
 ```
 
-![](images/Captura de pantalla 2024-06-18 a las 10.29.11.png)
+![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.29.11.png)
 
-![](images/Captura de pantalla 2024-06-18 a las 10.29.21.png)
+![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.29.21.png)
 
 #### 3. Quality control
 
@@ -82,7 +131,7 @@ table(Seurat_metadata$treatment)
 
 In the specific case of observing mitochondrial and ribosomal genes, this task is carried out because these genes are essential for proper cellular functioning.Dysfunctions in these genes may be indicative of cellular stress, given that both mitochondria and ribosomes play an essential role in vital processes such as energy production (in the case of mitochondria) and protein synthesis (in the case of ribosomes). By analyzing these percentages, one can understand the functional state of individual cells and how they might respond to stressful conditions.This facilitates more detailed investigation to better understand how different cell subpopulations react to specific stressful stimuli. - PercentageFeatureSet() = to calculate the percentage of the set of features of each cell, the ^MT-/^RP[SL]/\^HB[\^(P)] is a regular pattern that helps us choose the features that start with what we put in "" and since we will have to add a new one we will need add the name by calling the code col.name (name column), to later be able to call the expression percentage of the selected characteristic. - The VlnPlot() is a violin-style graph that shows the distribution of the expression in our different groups of cells. The group.by = is an r code that will ask us which style of how the graph will be divided. In this case, "orig.ident" is used, which tries to maintain the original identity of the cell as specified. features = feats specifies the genes that will be shown in the graphic, feats is a vector that contains numbers of the characteristics that are desired in the graphic. pt.size = 0.1 (point size), ncol = 3 (n=number, col=columns), NoLegend() (No legend) -\> that's all for how we will see the graphic visually, now we need to put the data we are using.
 
-![](images/Captura de pantalla 2024-06-20 a las 10.39.01.png)
+![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.39.01.png)
 
 ```{r}
 Seurat_metadata <- PercentageFeatureSet(Seurat_metadata, "^MT-", col.name="percent_mito")
@@ -130,11 +179,11 @@ table(CD4tots@meta.data$cluster)
 
 -   Identify the variables with different methods
 
--    PCA
+-   PCA
 
 Data normalization is a fundamental statistical step. So we treat them in the same way even if they come from different sources, and they can be in different measures. Normalization is important to eliminate or reduce unwanted effects that may arise due to technical or biological differences between samples.
 
-![](images/Captura de pantalla 2024-06-20 a las 10.39.17.png)
+![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.39.17.png)
 
 ```{r}
 CD4tots <- NormalizeData(CD4tots)
@@ -157,7 +206,7 @@ CD4tots <- RunUMAP(CD4tots, dims=1:16)
 
 In the next step, we specify a group of genes so that they behave differently between cells in the data we have provided. We have to identify which ones are more active in order to take them into account. We search for the genes that contribute most significantly to the variability of a gene expression matrix.
 
-![](images/Captura de pantalla 2024-06-20 a las 10.39.32.png)
+![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.39.32.png)
 
 ```{r}
 
@@ -169,9 +218,9 @@ DimPlot(CD4tots, reduction = "umap", group.by = "RNA_snn_res.0.7", label = TRUE)
 
 ```
 
-![](images/Captura de pantalla 2024-06-18 a las 10.33.56.png)
+![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.33.56.png)
 
-![](images/Captura de pantalla 2024-06-18 a las 10.34.03.png)*6.* S**ubset Analysis**
+![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.34.03.png)*6.* S**ubset Analysis**
 
 -   Created subsets based on cell identities.
 
@@ -179,7 +228,7 @@ DimPlot(CD4tots, reduction = "umap", group.by = "RNA_snn_res.0.7", label = TRUE)
 
 In order to be able to focus, in the next step we have to specify the groups that are relevant for us, and we define them as clusters. This way we will be able to make a more visual limitation and in an effective way we will be able to analyze these specific groups.
 
-![](images/Captura de pantalla 2024-06-20 a las 10.39.47.png)
+![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.39.47.png)
 
 ```{r}
 
@@ -219,7 +268,7 @@ Idents(CD8tots) <- CD8tots$celltype.cnd
 
 In order to be able to make the percentage of the data, it is necessary to make the proportion of groups with respect to the number of cells. So we will know how they are distributed.co
 
-![](images/Captura de pantalla 2024-06-20 a las 10.40.00.png)
+![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.40.00.png)
 
 ```{r}
 prop.table(table(CD8tots@meta.data$celltype.cnd))*100
