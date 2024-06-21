@@ -6,8 +6,6 @@
 
 First, we import the dates we need to use, in this case GSE123813_scc_metadata.txt.gz("<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE123813&format=file&file=GSE123813%5Fscc%5Fmetadata%2Etxt%2Egz>") for metadata and the subsetscc for our subset.
 
-<<<<<<< HEAD
-\
 For merging the two datasets into one cohesive unit for analysis, we rely on metadata. This metadata takes the form of a matrix that holds details regarding every individual cell ID. The cell ID acts as a singular reference point within our data; it points to specific elements within our metadata. For us, these elements will be patient types, details of treatment (including whether it's pre or post), and cluster types. Understanding clusters is vital towards our analysis of cell populations; cells will be organized into clusters according to common gene expression patterns, determined by their RNA sequences.
 
 We will use the common cell ID in both datasets to establish connections between the two data sets. We create a matrix where the identifiers form the columns, and each row depicts a gene with unique occurrences counted. This paves way for distinguishing cellular subpopulations in future— some showing differential responses while others uniform —to pre and post-treatment in an identified manner.
@@ -56,7 +54,6 @@ There exists one key—and only one—common between metadata and gene expressio
 
 -   This helps in identifying subpopulations of cells with similar or different responses to treatments (pre vs. post).
 
-=======
 ![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.38.14.png)
 
 ```{r file}
