@@ -1,10 +1,12 @@
 # Practices
 
-#### 1. Import data
+### 1. Import data
 
 -   Import the files
 
 First, we import the dates we need to use, in this case GSE123813_scc_metadata.txt.gz("<https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE123813&format=file&file=GSE123813%5Fscc%5Fmetadata%2Etxt%2Egz>") for metadata and the subsetscc for our subset.
+
+![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.38.14.png)
 
 For merging the two datasets into one cohesive unit for analysis, we rely on metadata. This metadata takes the form of a matrix that holds details regarding every individual cell ID. The cell ID acts as a singular reference point within our data; it points to specific elements within our metadata. For us, these elements will be patient types, details of treatment (including whether it's pre or post), and cluster types. Understanding clusters is vital towards our analysis of cell populations; cells will be organized into clusters according to common gene expression patterns, determined by their RNA sequences.
 
@@ -12,7 +14,7 @@ We will use the common cell ID in both datasets to establish connections between
 
 To conduct a proper evaluation, two primary datasets must be brought together:
 
-### 1. Metadata
+#### 1. Metadata
 
 This particular array furnishes elaborate particulars for every cell ID, entailing:
 
@@ -22,11 +24,11 @@ This particular array furnishes elaborate particulars for every cell ID, entaili
 
 -   **Type of cluster**: The group or cluster that the cell categorizes into based on gene expression patterns.
 
-### 2. Data Concerning Gene Expression
+#### 2. Data Concerning Gene Expression
 
 This dataset includes the cell IDs and genes, as well as their frequency of expression within the cells.
 
-### Incorporating the Datasets
+#### Incorporating the Datasets
 
 #### Employ Cell ID as the Binding Factor
 
@@ -54,8 +56,6 @@ There exists one key—and only one—common between metadata and gene expressio
 
 -   This helps in identifying subpopulations of cells with similar or different responses to treatments (pre vs. post).
 
-![](images/Captura%20de%20pantalla%202024-06-20%20a%20las%2010.38.14.png)
-
 ```{r file}
 
 scc_metadata <- read.delim("scc_metadata.txt")
@@ -72,7 +72,7 @@ library(tidyr)
 library(dplyr)
 ```
 
-#### 2. Data processing
+### 2. Data processing
 
 -   Treat the data
 
@@ -122,7 +122,7 @@ table(Seurat_metadata$treatment)
 
 ![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.29.21.png)
 
-#### 3. Quality control
+### 3. Quality control
 
 -   Calculated and visualized various quality control.
 
@@ -172,7 +172,7 @@ CD4tots <- subset(CD4tots, subset=nFeature_RNA < 4000 & percent_mito < 8 )
 table(CD4tots@meta.data$cluster)
 ```
 
-#### 4.Normalization the data
+### 4. Normalization the data
 
 -   Normalized the data
 
@@ -197,7 +197,7 @@ CD4tots <- FindClusters(CD4tots, resolution = c(0.7))
 CD4tots <- RunUMAP(CD4tots, dims=1:16)
 ```
 
-#### 5. **Visualization of Clusters**
+### 5. **Visualization of Clusters**
 
 -   Using UMAP for the clusters.
 
@@ -219,7 +219,7 @@ DimPlot(CD4tots, reduction = "umap", group.by = "RNA_snn_res.0.7", label = TRUE)
 
 ![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.33.56.png)
 
-![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.34.03.png)*6.* S**ubset Analysis**
+### ![](images/Captura%20de%20pantalla%202024-06-18%20a%20las%2010.34.03.png)**6. Subset Analysis**
 
 -   Created subsets based on cell identities.
 
@@ -261,7 +261,7 @@ In this step, we're assigning cluster identities based on the definitions we've 
 Idents(CD8tots) <- CD8tots$celltype.cnd
 ```
 
-#### *7. Cell proportions*
+### **7. Cell proportions**
 
 -   Calculated and visualized the proportions of different cell types based on treatment condition.
 
